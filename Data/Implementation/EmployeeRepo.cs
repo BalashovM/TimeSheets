@@ -9,29 +9,36 @@ namespace TimeSheets.Data.Implementations
 {
     public class EmployeeRepo : IEmployeeRepo
     {
-        public void Add()
+        private readonly TimesheetDbContext _dbContext;
+        public EmployeeRepo(TimesheetDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
+        public async Task Add(Employee item)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(Guid id)
+        public async Task Delete(Employee item)
         {
             throw new NotImplementedException();
         }
 
-        public Employee GetItem(Guid id)
+        public async Task<Employee> GetItem(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Employee> GetItems()
+        public async Task<IEnumerable<Employee>> GetItems(int skip, int take)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(Guid id)
+        public async Task Update(Employee item)
         {
-            throw new NotImplementedException();
+            _dbContext.Employees.Update(item);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

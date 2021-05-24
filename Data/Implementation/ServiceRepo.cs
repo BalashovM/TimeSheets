@@ -9,29 +9,36 @@ namespace TimeSheets.Data.Implementations
 {
     public class ServiceRepo : IServiceRepo
     {
-        public void Add()
+        private readonly TimesheetDbContext _dbContext;
+        public ServiceRepo(TimesheetDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
+        public async Task Add(Service item)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(Guid id)
+        public async Task Delete(Service item)
         {
             throw new NotImplementedException();
         }
 
-        public Service GetItem(Guid id)
+        public async Task<Service> GetItem(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Service> GetItems()
+        public async Task<IEnumerable<Service>> GetItems(int skip, int take)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(Guid id)
+        public async Task Update(Service item)
         {
-            throw new NotImplementedException();
+            _dbContext.Services.Update(item);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

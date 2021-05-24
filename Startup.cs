@@ -11,6 +11,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TimeSheets.Data;
+using TimeSheets.Data.Implementations;
+using TimeSheets.Data.Interfaces;
+using TimeSheets.Domain.Implementation;
+using TimeSheets.Domain.Interfaces;
 
 namespace TimeSheets
 {
@@ -26,6 +31,13 @@ namespace TimeSheets
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<TimesheetDbContext>(options => 
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+             
+            services.AddScoped<ISheetRepo, SheetRepo>();
+            services.AddScoped<IContractRepo, ContractRepo>();
+            services.AddScoped<ISheetManager, SheetManager>();
+            services.AddScoped<IContractManager, ContractManager>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

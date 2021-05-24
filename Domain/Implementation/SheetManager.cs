@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using TimeSheets.Data.Interfaces;
 using TimeSheets.Domain.Interfaces;
 using TimeSheets.Models;
+using TimeSheets.Models.Dto;
 
 namespace TimeSheets.Domain.Implementation
 {
@@ -17,9 +18,46 @@ namespace TimeSheets.Domain.Implementation
             _sheetRepo = sheetRepo;
         }
 
-        public Sheet GetItem(Guid id)
+        public async Task<Sheet> GetItem(Guid id)
         {
-            return _sheetRepo.GetItem(id);
+            return await _sheetRepo.GetItem(id);
+        }
+
+        public async Task<IEnumerable<Sheet>> GetItems(int skip, int take)
+        {
+            return await _sheetRepo.GetItems(skip, take);
+        }
+
+        public async Task<Guid> Create(SheetRequest sheetRequest)
+        {
+            var sheet = new Sheet
+            {
+                Id = Guid.NewGuid(),
+                Amount = sheetRequest.Amount,
+                ContractId = sheetRequest.ContractId,
+                Date = sheetRequest.Date,
+                EmployeeId = sheetRequest.EmployeeId,
+                ServiceId = sheetRequest.ServiceId
+            };
+
+            await _sheetRepo.Add(sheet);
+
+            return  sheet.Id;
+        }
+
+        public async Task Update(Guid id, SheetRequest sheetRequest)
+        {
+            var sheet = new Sheet
+            {
+                Id = id,
+                Amount = sheetRequest.Amount,
+                ContractId = sheetRequest.ContractId,
+                Date = sheetRequest.Date,
+                EmployeeId = sheetRequest.EmployeeId,
+                ServiceId = sheetRequest.ServiceId
+            };
+
+            await _sheetRepo.Update(sheet);
         }
     }
 }

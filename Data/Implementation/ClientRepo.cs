@@ -9,29 +9,36 @@ namespace TimeSheets.Data.Implementations
 {
     public class ClientRepo : IClientRepo
     {
-        public void Add()
+        private readonly TimesheetDbContext _dbContext;
+        public ClientRepo(TimesheetDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
+        public async Task Add(Client item)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(Guid id)
+        public async Task Delete(Client item)
         {
             throw new NotImplementedException();
         }
 
-        public Client GetItem(Guid id)
+        public async Task<Client> GetItem(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Client> GetItems()
+        public async Task<IEnumerable<Client>> GetItems(int skip, int take)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(Guid id)
+        public async Task Update(Client item)
         {
-            throw new NotImplementedException();
+            _dbContext.Clients.Update(item);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

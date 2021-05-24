@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using TimeSheets.Data.Interfaces;
 using TimeSheets.Models;
@@ -9,29 +8,37 @@ namespace TimeSheets.Data.Implementations
 {
     public class UserRepo : IUserRepo
     {
-        public void Add()
+        private readonly TimesheetDbContext _dbContext;
+        public UserRepo(TimesheetDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
+        public async Task Add(User item)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(Guid id)
+        public async Task Delete(User item)
         {
             throw new NotImplementedException();
         }
 
-        public User GetItem(Guid id)
+        public async Task<User> GetItem(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<User> GetItems()
+        public async Task<IEnumerable<User>> GetItems(int skip, int take)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(Guid id)
+        public async Task Update(User item)
         {
-            throw new NotImplementedException();
+            _dbContext.Users.Update(item);
+            await _dbContext.SaveChangesAsync();
         }
+
     }
 }

@@ -7,6 +7,10 @@ namespace TimeSheets.Domain
 {
     public interface IManagerBase<T>
     {
-        T GetItem(Guid id);
+        Task<T> GetItem(Guid id);
+        Task<IEnumerable<T>> GetItems(int skip, int take);
+        Task<Guid> Create(T item);
+        //Task Update(Guid id, T sheetRequest);
+
     }
 }

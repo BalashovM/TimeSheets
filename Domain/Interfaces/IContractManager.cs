@@ -8,5 +8,6 @@ namespace TimeSheets.Domain.Interfaces
 {
     public interface IContractManager:IManagerBase<Contract>
     {
+        Task<bool?> CheckContractIsActive(Guid id);
     }
 }

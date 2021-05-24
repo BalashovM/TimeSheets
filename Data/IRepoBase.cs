@@ -7,10 +7,10 @@ namespace TimeSheets.Data
 {
     public interface IRepoBase<T>
     {
-        T GetItem(Guid id);
-        IEnumerable<T> GetItems();
-        void Add();
-        void Update(Guid id);
-        void Delete(Guid id);
+        Task<T> GetItem(Guid id);
+        Task<IEnumerable<T>> GetItems(int skip, int take);
+        Task Add(T item);
+        Task Update(T item);
+        Task Delete(T item);
     }
 }
