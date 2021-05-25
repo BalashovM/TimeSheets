@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using TimeSheets.Models;
+﻿using TimeSheets.Models;
+using TimeSheets.Models.Dto;
 
 namespace TimeSheets.Domain.Interfaces
 {
-    interface IServiceManager:IManagerBase<Service>
+    /// <summary>Менеджер запросов к данным по услуге</summary>
+    interface IServiceManager :IManagerBase<Service,ServiceRequest>
     {
     }
 }

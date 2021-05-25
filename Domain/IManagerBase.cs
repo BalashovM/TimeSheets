@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace TimeSheets.Domain
 {
-    public interface IManagerBase<T>
+    /// <summary>Менеджер запросов к репозиториям</summary>
+    public interface IManagerBase<TModel, TRequest>
     {
-        Task<T> GetItem(Guid id);
-        Task<IEnumerable<T>> GetItems(int skip, int take);
-        Task<Guid> Create(T item);
-        //Task Update(Guid id, T sheetRequest);
-
+        Task<TModel> GetItem(Guid id);
+        Task<IEnumerable<TModel>> GetItems(int skip, int take);
+        Task<Guid> Create(TRequest request);
+        Task Update(Guid id, TRequest request);
+        Task Delete(Guid id);
     }
 }

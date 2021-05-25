@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TimeSheets.Data.Configurations;
 using TimeSheets.Models;
 
 namespace TimeSheets.Data
@@ -9,6 +10,7 @@ namespace TimeSheets.Data
         public DbSet<Contract> Contracts { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Service> Services { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
         public DbSet<Sheet> Sheets { get; set; }
         public DbSet<User> Users { get; set; }
 
@@ -19,27 +21,13 @@ namespace TimeSheets.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Client>().ToTable("Client");
-            modelBuilder.Entity<Contract>().ToTable("Contract");
-            modelBuilder.Entity<Employee>().ToTable("Employee");
-            modelBuilder.Entity<Service>().ToTable("Service");
-            modelBuilder.Entity<Sheet>().ToTable("Sheet");
-            modelBuilder.Entity<User>().ToTable("User");
-
-            modelBuilder.Entity<Sheet>()
-                .HasOne(sheet => sheet.Contract)
-                .WithMany(contract => contract.Sheets)
-                .HasForeignKey("ContractId");
-
-            modelBuilder.Entity<Sheet>()
-                .HasOne(sheet => sheet.Service)
-                .WithMany(service => service.Sheets)
-                .HasForeignKey("ServiceId");
-
-            modelBuilder.Entity<Sheet>()
-                .HasOne(sheet => sheet.Employee)
-                .WithMany(employee => employee.Sheets)
-                .HasForeignKey("EmployeeId");
+            modelBuilder.ApplyConfiguration(new ClientConfiguration());
+            modelBuilder.ApplyConfiguration(new ContractConfiguration());
+            modelBuilder.ApplyConfiguration(new EmployeeConfiguration());
+            modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
+            modelBuilder.ApplyConfiguration(new ServiceConfiguration());
+            modelBuilder.ApplyConfiguration(new SheetConfiguration());
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
         }
     }
 }

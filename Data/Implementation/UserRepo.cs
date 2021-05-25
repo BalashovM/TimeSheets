@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TimeSheets.Data.Interfaces;
@@ -16,22 +17,36 @@ namespace TimeSheets.Data.Implementations
 
         public async Task Add(User item)
         {
-            throw new NotImplementedException();
+            await _dbContext.Users.AddAsync(item);
+            await _dbContext.SaveChangesAsync();
         }
 
-        public async Task Delete(User item)
+        public async Task<bool> CheckItemIsDeleted(Guid id)
         {
-            throw new NotImplementedException();
+            var item = await _dbContext.Users.FindAsync(id);
+            return item.IsDeleted;
+        }
+
+        public async Task Delete(Guid id)
+        {
+            var item = await _dbContext.Users.FindAsync(id);
+            if (item != null)
+            {
+                item.IsDeleted = true;
+                _dbContext.Users.Update(item);
+                await _dbContext.SaveChangesAsync();
+            }
         }
 
         public async Task<User> GetItem(Guid id)
         {
-            throw new NotImplementedException();
+            var result = await _dbContext.Users.FindAsync(id);
+            return result;
         }
 
         public async Task<IEnumerable<User>> GetItems(int skip, int take)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Users.ToListAsync();
         }
 
         public async Task Update(User item)

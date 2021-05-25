@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using TimeSheets.Data.Interfaces;
 using TimeSheets.Domain.Interfaces;
 using TimeSheets.Models;
+using TimeSheets.Models.Dto;
 
 namespace TimeSheets.Domain.Implementation
 {
@@ -16,20 +16,6 @@ namespace TimeSheets.Domain.Implementation
         {
             _employeeRepo = employeeRepo;
         }
-
-        public async Task<Guid> Create(Employee item)
-        {
-            var employee = new Employee
-            {
-                Id = Guid.NewGuid(),
-                UserId = item.UserId
-            };
-
-            await _employeeRepo.Add(employee);
-
-            return employee.Id;
-        }
-
         public async Task<Employee> GetItem(Guid id)
         {
             return await _employeeRepo.GetItem(id);
@@ -38,6 +24,41 @@ namespace TimeSheets.Domain.Implementation
         public async Task<IEnumerable<Employee>> GetItems(int skip, int take)
         {
             return await _employeeRepo.GetItems(skip, take);
+        }
+
+        public async Task<Guid> Create(EmployeeRequest request)
+        {
+            var employee = new Employee()
+            {
+                Id = Guid.NewGuid(),
+                UserId = request.UserId,
+                IsDeleted = false
+            };
+
+            await _employeeRepo.Add(employee);
+
+            return employee.Id;
+        }
+
+        public async Task Update(Guid id, EmployeeRequest request)
+        {
+            var employee = await _employeeRepo.GetItem(id);
+            if (employee != null)
+            {
+                employee.UserId = request.UserId;
+
+                await _employeeRepo.Update(employee);
+            }
+        }
+
+        public async Task<bool> CheckEmployeeIsDeleted(Guid id)
+        {
+            return await _employeeRepo.CheckItemIsDeleted(id);
+        }
+
+        public async Task Delete(Guid id)
+        {
+            await _employeeRepo.Delete(id);
         }
     }
 }

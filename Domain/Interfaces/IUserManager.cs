@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using TimeSheets.Models;
+﻿using TimeSheets.Models;
+using TimeSheets.Models.Dto;
 
 namespace TimeSheets.Domain.Interfaces
 {
-    public interface IUserManager:IManagerBase<User>
+    /// <summary>Менеджер запросов к данным по пользователю</summary>
+    public interface IUserManager:IManagerBase<User, UserRequest>
     {
     }
 }

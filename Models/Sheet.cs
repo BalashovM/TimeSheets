@@ -13,10 +13,13 @@ namespace TimeSheets.Models
         public Guid EmployeeId { get; set; }
         public Guid ContractId { get; set; }
         public Guid ServiceId { get; set; }
+        public Guid? InvoiceId { get; set; }
         public int Amount { get; set; }
-        //Навигационные свойства
+        public bool IsDeleted { get; set; }
+
         public Employee Employee { get; set; }
         public Contract Contract { get; set; }
         public Service Service { get; set; }
+        public Invoice Invoice { get; set; }
     }
 }

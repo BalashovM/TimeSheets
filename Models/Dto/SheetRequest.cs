@@ -11,6 +11,7 @@ namespace TimeSheets.Models.Dto
         public Guid EmployeeId { get; set; }
         public Guid ContractId { get; set; }
         public Guid ServiceId { get; set; }
+        public Guid? InvoiceId { get; set; }
         public int Amount { get; set; }
     }
 }
