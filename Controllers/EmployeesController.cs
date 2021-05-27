@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using TimeSheets.Domain.Interfaces;
 using TimeSheets.Models.Dto.Requests;
 
 namespace TimeSheets.Controllers
 {
-	[Route("api/[controller]")]
+    [Route("api/[controller]")]
 	[ApiController]
 	public class EmployeesController : ControllerBase
 	{
@@ -19,6 +18,7 @@ namespace TimeSheets.Controllers
 			_employeeManager = employeeManager;
 		}
 
+		[Authorize(Roles = "admin, user")]
 		[HttpGet("{id}")]
 		public async Task<IActionResult> Get(Guid id)
 		{
@@ -26,6 +26,7 @@ namespace TimeSheets.Controllers
 			return Ok(result);
 		}
 
+		[Authorize(Roles = "admin, user")]
 		[HttpGet]
 		public async Task<IActionResult> GetItems()
 		{
@@ -36,6 +37,7 @@ namespace TimeSheets.Controllers
 			return Ok(result);
 		}
 
+		[Authorize(Roles = "admin")]
 		[HttpPost]
 		public async Task<IActionResult> Create([FromBody] EmployeeRequest request)
 		{
@@ -43,6 +45,7 @@ namespace TimeSheets.Controllers
 			return Ok(id);
 		}
 
+		[Authorize(Roles = "admin")]
 		[HttpPut("{id}")]
 		public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] EmployeeRequest request)
 		{
@@ -51,6 +54,7 @@ namespace TimeSheets.Controllers
 
 		}
 
+		[Authorize(Roles = "admin")]
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> Delete([FromRoute] Guid id)
 		{

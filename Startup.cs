@@ -45,26 +45,23 @@ namespace TimeSheets
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TimeSheets v1"));
             }
 
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API сервиса учета рабочего времени");
+                c.RoutePrefix = string.Empty;
+            });
+
             //app.UseHttpsRedirection();
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-            });
-
-            // Включение middleware в пайплайн для обработки Swagger запросов.
-            app.UseSwagger();
-            // включение middleware для генерации swagger-ui
-            // указываем Swagger JSON эндпоинт (куда обращаться за сгенерированной спецификацией
-            // по которой будет построен UI).
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API сервиса учета рабочего времени");
-                c.RoutePrefix = string.Empty;
             });
         }
     }

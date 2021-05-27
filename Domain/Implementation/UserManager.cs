@@ -67,6 +67,8 @@ namespace TimeSheets.Domain.Implementation
             if (user != null)
             {
                 user.UserName = request.UserName;
+                user.PasswordHash = GetPasswordHash(request.Password);
+                user.Role = request.Role;
 
                 await _userRepo.Update(user);
             }

@@ -20,7 +20,7 @@ namespace TimeSheets.Controllers
             _contracManager = contracManager;
         }
 
-        [Authorize(Roles = "user, admin")]
+        [Authorize(Roles = "admin, user")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get([FromQuery] Guid id)
         {
@@ -29,7 +29,7 @@ namespace TimeSheets.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = "user, admin")]
+        [Authorize(Roles = "admin, user")]
         [HttpGet]
         public async Task<IActionResult> GetItems()
         {
@@ -41,6 +41,7 @@ namespace TimeSheets.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "admin, user")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] SheetRequest sheet)
         {
@@ -56,6 +57,7 @@ namespace TimeSheets.Controllers
             return Ok(id);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] Guid id,[FromBody] SheetRequest sheet)
         {
@@ -71,6 +73,7 @@ namespace TimeSheets.Controllers
             return Ok(id);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {

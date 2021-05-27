@@ -15,10 +15,12 @@ namespace TimeSheets.Domain.Implementation
 	public class LoginManager : ILoginManager
 	{
 		private readonly JwtAccessOptions _jwtAccessOptions;
+		private readonly JwtRefreshOptions _jwtRefreshOptions;
 
-		public LoginManager(IOptions<JwtAccessOptions> jwtAccessOptions)
+		public LoginManager(IOptions<JwtAccessOptions> jwtAccessOptions, IOptions<JwtRefreshOptions> jwtRefreshOptions)
 		{
 			_jwtAccessOptions = jwtAccessOptions.Value;
+			_jwtRefreshOptions = jwtRefreshOptions.Value;
 		}
 
 		public async Task<LoginResponse> Authenticate(User user)
@@ -31,13 +33,18 @@ namespace TimeSheets.Domain.Implementation
 			};
 
 			var accessTokenRaw = _jwtAccessOptions.GenerateToken(claims);
+			var refreshTokenRaw = _jwtRefreshOptions.GenerateToken(claims);
+
 			var securityHandler = new JwtSecurityTokenHandler();
+
 			var accessToken = securityHandler.WriteToken(accessTokenRaw);
+			var refreshToken = securityHandler.WriteToken(refreshTokenRaw);
 
 			var loginResponse = new LoginResponse()
 			{
 				AccessToken = accessToken,
-				ExpiresIn = accessTokenRaw.ValidTo.ToEpochTime()
+				ExpiresIn = accessTokenRaw.ValidTo.ToEpochTime(),
+				RefreshToken = refreshToken
 			};
 
 			return loginResponse;
