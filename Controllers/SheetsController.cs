@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using TimeSheets.Domain.Interfaces;
-using TimeSheets.Models.Dto;
+using TimeSheets.Models.Dto.Requests;
 
 namespace TimeSheets.Controllers
 {
@@ -19,6 +20,7 @@ namespace TimeSheets.Controllers
             _contracManager = contracManager;
         }
 
+        [Authorize(Roles = "user, admin")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get([FromQuery] Guid id)
         {
@@ -27,9 +29,13 @@ namespace TimeSheets.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "user, admin")]
         [HttpGet]
-        public async Task<IActionResult> GetItems(int skip, int take)
+        public async Task<IActionResult> GetItems()
         {
+            int skip = 0;
+            int take = 1;
+
             var result = await _sheetManager.GetItems(skip, take);
 
             return Ok(result);
@@ -50,11 +56,6 @@ namespace TimeSheets.Controllers
             return Ok(id);
         }
 
-        /// <summary> ОБновляет запись табеля </summary>
-        /// <param name="id"></param>
-        /// <param name="sheet"></param>
-        /// <returns></returns>
-        /// 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] Guid id,[FromBody] SheetRequest sheet)
         {
@@ -70,6 +71,11 @@ namespace TimeSheets.Controllers
             return Ok(id);
         }
 
-
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
+        {
+            await _sheetManager.Delete(id);
+            return Ok();
+        }
     }
 }

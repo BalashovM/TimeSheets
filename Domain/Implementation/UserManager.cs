@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using TimeSheets.Data.Interfaces;
 using TimeSheets.Domain.Interfaces;
 using TimeSheets.Models;
-using TimeSheets.Models.Dto;
+using TimeSheets.Models.Dto.Requests;
 
 namespace TimeSheets.Domain.Implementation
 {
@@ -22,9 +24,25 @@ namespace TimeSheets.Domain.Implementation
             return await _userRepo.GetItem(id);
         }
 
+        public async Task<User> GetItem(LoginRequest request)
+        {
+            var passwordHash = GetPasswordHash(request.Password);
+            var user = await _userRepo.GetItem(request.Login, passwordHash);
+
+            return user;
+        }
+
         public async Task<IEnumerable<User>> GetItems(int skip, int take)
         {
             return await _userRepo.GetItems(skip, take);
+        }
+
+        private static byte[] GetPasswordHash(string password)
+        {
+            using (var sha1 = new SHA1CryptoServiceProvider())
+            {
+                return sha1.ComputeHash(Encoding.Unicode.GetBytes(password));
+            }
         }
 
         public async Task<Guid> Create(UserRequest request)
@@ -33,6 +51,8 @@ namespace TimeSheets.Domain.Implementation
             {
                 Id = Guid.NewGuid(),
                 UserName = request.UserName,
+                PasswordHash = GetPasswordHash(request.Password),
+                Role = request.Role,
                 IsDeleted = false
             };
 

@@ -1,23 +1,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using TimeSheets.Data;
-using TimeSheets.Data.Implementations;
-using TimeSheets.Data.Interfaces;
-using TimeSheets.Domain.Implementation;
-using TimeSheets.Domain.Interfaces;
-using TimeSheets.Infrastructure;
+using TimeSheets.Infrastructure.Extensions;
 
 namespace TimeSheets
 {
@@ -44,6 +30,9 @@ namespace TimeSheets
 
             // Контекст базы данных
             services.ConfigureDbContext(Configuration);
+
+            // Аутентификация
+            services.ConfigureAuthentication(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

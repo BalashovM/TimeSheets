@@ -10,7 +10,10 @@ namespace TimeSheets.Models
     {
         public Guid Id { get; set; }
         public string UserName { get; set; }
+        public byte[] PasswordHash { get; set; }
+        public string Role { get; set; }
         public bool IsDeleted { get; set; }
+        
 
         public Client Client { get; set; }
         public Employee Employee { get; set; }

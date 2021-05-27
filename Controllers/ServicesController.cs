@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,19 +11,19 @@ namespace TimeSheets.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class EmployeesController : ControllerBase
+	public class ServicesController : ControllerBase
 	{
-		private readonly IEmployeeManager _employeeManager;
+		private readonly IServiceManager _serviceManager;
 
-		public EmployeesController(IEmployeeManager employeeManager)
+		public ServicesController(IServiceManager serviceManager)
 		{
-			_employeeManager = employeeManager;
+			_serviceManager = serviceManager;
 		}
 
 		[HttpGet("{id}")]
 		public async Task<IActionResult> Get(Guid id)
 		{
-			var result = await _employeeManager.GetItem(id);
+			var result = await _serviceManager.GetItem(id);
 			return Ok(result);
 		}
 
@@ -32,21 +33,21 @@ namespace TimeSheets.Controllers
 			int skip = 0;
 			int take = 1;
 
-			var result = await _employeeManager.GetItems(skip, take);
+			var result = await _serviceManager.GetItems(skip, take);
 			return Ok(result);
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create([FromBody] EmployeeRequest request)
+		public async Task<IActionResult> Create([FromBody] ServiceRequest request)
 		{
-			var id = await _employeeManager.Create(request);
+			var id = await _serviceManager.Create(request);
 			return Ok(id);
 		}
 
 		[HttpPut("{id}")]
-		public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] EmployeeRequest request)
+		public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] ServiceRequest request)
 		{
-			await _employeeManager.Update(id, request);
+			await _serviceManager.Update(id, request);
 			return Ok();
 
 		}
@@ -54,7 +55,7 @@ namespace TimeSheets.Controllers
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> Delete([FromRoute] Guid id)
 		{
-			await _employeeManager.Delete(id);
+			await _serviceManager.Delete(id);
 			return Ok();
 		}
 	}
