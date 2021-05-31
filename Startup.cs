@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,6 +12,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TimeSheets.Data;
+using TimeSheets.Data.Implementations;
+using TimeSheets.Data.Interfaces;
+using TimeSheets.Domain.Implementation;
+using TimeSheets.Domain.Interfaces;
+using TimeSheets.Infrastructure;
 
 namespace TimeSheets
 {
@@ -26,12 +33,17 @@ namespace TimeSheets
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            // Контроллеры
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "TimeSheets", Version = "v1" });
-            });
+
+            // Swagger
+            services.ConfigureSwagger(Configuration);
+
+            // Обработчики данных (менеджеры и репозитории)
+            services.ConfigureDataHandlers(Configuration);
+
+            // Контекст базы данных
+            services.ConfigureDbContext(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,7 +56,7 @@ namespace TimeSheets
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TimeSheets v1"));
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
@@ -53,6 +65,17 @@ namespace TimeSheets
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            // Включение middleware в пайплайн для обработки Swagger запросов.
+            app.UseSwagger();
+            // включение middleware для генерации swagger-ui
+            // указываем Swagger JSON эндпоинт (куда обращаться за сгенерированной спецификацией
+            // по которой будет построен UI).
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API сервиса учета рабочего времени");
+                c.RoutePrefix = string.Empty;
             });
         }
     }
