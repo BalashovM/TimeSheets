@@ -5,9 +5,7 @@ using TimeSheets.Models.Dto.Requests;
 
 namespace TimeSheets.Controllers
 {
-    [Route("api/[controller]")]
-	[ApiController]
-	public class LoginController : ControllerBase
+	public class LoginController : TimesheetBaseController
 	{
 		private readonly IUserManager _userManager;
 		private readonly ILoginManager _loginManager;

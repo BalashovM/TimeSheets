@@ -7,9 +7,7 @@ using TimeSheets.Models.Dto.Requests;
 
 namespace TimeSheets.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UsersController: ControllerBase
+    public class UsersController: TimesheetBaseController
     {
         private readonly IUserManager _userManager;
 

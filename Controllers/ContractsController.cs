@@ -7,9 +7,7 @@ using TimeSheets.Models.Dto.Requests;
 
 namespace TimeSheets.Controllers
 {
-    [Route("api/[controller]")]
-	[ApiController]
-	public class ContractsController : ControllerBase
+	public class ContractsController : TimesheetBaseController
 	{
 		private readonly IContractManager _contractManager;
 

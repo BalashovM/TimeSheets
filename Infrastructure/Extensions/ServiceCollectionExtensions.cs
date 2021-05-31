@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +11,9 @@ using TimeSheets.Data.Implementations;
 using TimeSheets.Data.Interfaces;
 using TimeSheets.Domain.Implementation;
 using TimeSheets.Domain.Interfaces;
+using TimeSheets.Infrastructure.Validation;
 using TimeSheets.Models.Dto.Auth;
+using TimeSheets.Models.Dto.Requests;
 
 namespace TimeSheets.Infrastructure.Extensions
 {
@@ -98,9 +101,11 @@ namespace TimeSheets.Infrastructure.Extensions
 			services.AddScoped<IEmployeeManager, EmployeeManager>();
 			services.AddScoped<IInvoiceManager, InvoiceManager>();
 			services.AddScoped<IServiceManager, ServiceManager>();
+			services.AddScoped<ILoginManager, LoginManager>();
 			services.AddScoped<ISheetManager, SheetManager>();
 			services.AddScoped<IUserManager, UserManager>();
 		}
+
 		public static void ConfigureAuthentication(this IServiceCollection services, IConfiguration configuration)
 		{
 			services.Configure<JwtAccessOptions>(configuration.GetSection("Authentication:JwtAccessOptions"));
@@ -122,6 +127,11 @@ namespace TimeSheets.Infrastructure.Extensions
 				{
 					options.TokenValidationParameters = jwtSettings.GetTokenValidationParameters();
 				});
+		}
+
+		public static void ConfigureValidation(this IServiceCollection services)
+		{
+			services.AddTransient<IValidator<SheetRequest>, SheetRequestValidator>();
 		}
 
 	}

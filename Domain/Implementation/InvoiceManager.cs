@@ -10,6 +10,7 @@ namespace TimeSheets.Domain.Implementation
 {
     public class InvoiceManager : IInvoiceManager
 	{
+		private readonly ISheetRepo _sheetRepo;
 		private readonly IInvoiceRepo _invoiceRepo;
 
 		public InvoiceManager(IInvoiceRepo invoiceRepo)

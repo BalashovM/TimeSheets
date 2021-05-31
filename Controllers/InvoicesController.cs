@@ -7,10 +7,9 @@ using TimeSheets.Models.Dto.Requests;
 
 namespace TimeSheets.Controllers
 {
-    [Route("api/[controller]")]
-	[ApiController]
-	public class InvoicesController : ControllerBase
+	public class InvoicesController : TimesheetBaseController
 	{
+		private readonly IContractManager _contractManager;
 		private readonly IInvoiceManager _invoiceManager;
 
 		public InvoicesController(IInvoiceManager invoiceManager)
@@ -18,6 +17,7 @@ namespace TimeSheets.Controllers
 			_invoiceManager = invoiceManager;
 		}
 
+		/// <summary> Получаем конкретную запись о клиентском счёте</summary>
 		[Authorize(Roles = "admin, client")]
 		[HttpGet("{id}")]
 		public async Task<IActionResult> Get(Guid id)
@@ -26,6 +26,7 @@ namespace TimeSheets.Controllers
 			return Ok(result);
 		}
 
+		/// <summary> Возвращает список клиентских счетов</summary>
 		[Authorize(Roles = "admin, client")]
 		[HttpGet]
 		public async Task<IActionResult> GetItems()
@@ -37,6 +38,7 @@ namespace TimeSheets.Controllers
 			return Ok(result);
 		}
 
+		/// <summary> Создёт клиентский счет </summary>
 		[Authorize(Roles = "admin")]
 		[HttpPost]
 		public async Task<IActionResult> Create([FromBody] InvoiceRequest request)
@@ -45,6 +47,7 @@ namespace TimeSheets.Controllers
 			return Ok(id);
 		}
 
+		/// <summary>  Обновляет запись клиентского счёта</summary>
 		[Authorize(Roles = "admin")]
 		[HttpPut("{id}")]
 		public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] InvoiceRequest request)
@@ -54,6 +57,7 @@ namespace TimeSheets.Controllers
 
 		}
 
+		/// <summary> Помечает запись о клиентском счете как удалённую</summary>
 		[Authorize(Roles = "admin")]
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> Delete([FromRoute] Guid id)
