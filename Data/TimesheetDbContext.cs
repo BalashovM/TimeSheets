@@ -13,10 +13,10 @@ namespace TimeSheets.Data
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<Sheet> Sheets { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<RefreshToken> RefreshToken { get; set; }
 
         public TimesheetDbContext(DbContextOptions<TimesheetDbContext> options) : base(options)
         { 
-        
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -28,6 +28,7 @@ namespace TimeSheets.Data
             modelBuilder.ApplyConfiguration(new ServiceConfiguration());
             modelBuilder.ApplyConfiguration(new SheetConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new RefreshTokenConfiguration());
         }
     }
 }

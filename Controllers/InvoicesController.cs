@@ -43,6 +43,12 @@ namespace TimeSheets.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Create([FromBody] InvoiceRequest request)
 		{
+			var isAllowedToCreate = await _contractManager.CheckContractIsActive(request.ContractId);
+			if (isAllowedToCreate != null && !(bool)isAllowedToCreate)
+			{
+				return BadRequest($"Contract {request.ContractId} is not active or not found.");
+			}
+			
 			var id = await _invoiceManager.Create(request);
 			return Ok(id);
 		}
