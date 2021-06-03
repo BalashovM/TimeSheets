@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TimeSheets.Data.Interfaces;
 using TimeSheets.Domain.Interfaces;
 using TimeSheets.Models;
-using TimeSheets.Models.Dto;
+using TimeSheets.Models.Dto.Requests;
 
 namespace TimeSheets.Domain.Implementation
 {
     public class InvoiceManager : IInvoiceManager
 	{
+		private readonly ISheetRepo _sheetRepo;
 		private readonly IInvoiceRepo _invoiceRepo;
+		private const int Rate = 100;
 
 		public InvoiceManager(IInvoiceRepo invoiceRepo)
 		{
@@ -29,15 +32,20 @@ namespace TimeSheets.Domain.Implementation
 
 		public async Task<Guid> Create(InvoiceRequest request)
 		{
+			var sheets = await _sheetRepo.GetItemsForInvoice(request.ContractId, request.DateStart, request.DateEnd);
+
 			var invoice = new Invoice()
 			{
 				Id = Guid.NewGuid(),
 				ContractId = request.ContractId,
 				DateStart = request.DateStart,
 				DateEnd = request.DateEnd,
-				Sum = request.Sum,
+				//Sum = request.Sum,
 				IsDeleted = false
 			};
+
+			invoice.Sheets.AddRange(sheets);
+			invoice.Sum = invoice.Sheets.Sum(x => x.Amount * Rate);
 
 			await _invoiceRepo.Add(invoice);
 

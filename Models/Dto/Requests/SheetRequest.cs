@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace TimeSheets.Models.Dto
+namespace TimeSheets.Models.Dto.Requests
 {
+    /// <summary>Запрос для карточки учета затраченного времени</summary>
     public class SheetRequest
     {
         public DateTime Date { get; set; }

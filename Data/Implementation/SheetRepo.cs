@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TimeSheets.Data.Interfaces;
 using TimeSheets.Models;
@@ -47,6 +48,16 @@ namespace TimeSheets.Data.Implementations
         public async Task<IEnumerable<Sheet>> GetItems(int skip, int take)
         {
             return await _dbContext.Sheets.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Sheet>> GetItemsForInvoice(Guid contractId, DateTime dateStart, DateTime dateEnd)
+        {
+            var sheets = await _dbContext.Sheets.Where(x => x.ContractId == contractId)
+                .Where(x => x.Date <= dateEnd && x.Date >= dateStart)
+                .Where(x => x.InvoiceId == null)
+                .ToListAsync();
+
+            return sheets;
         }
 
         public async Task Update(Sheet item)

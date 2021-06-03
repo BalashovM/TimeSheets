@@ -16,7 +16,6 @@ namespace TimeSheets.Data
 
         public TimesheetDbContext(DbContextOptions<TimesheetDbContext> options) : base(options)
         { 
-        
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -44,6 +44,12 @@ namespace TimeSheets.Data.Implementations
             return result;
         }
 
+        public async Task<User> GetItem(string login, byte[] passwordHash)
+        {
+            return await _dbContext.Users
+                .FirstOrDefaultAsync(x => x.UserName == login && x.PasswordHash == passwordHash);
+        }
+
         public async Task<IEnumerable<User>> GetItems(int skip, int take)
         {
             return await _dbContext.Users.ToListAsync();
