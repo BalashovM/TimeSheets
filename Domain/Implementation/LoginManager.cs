@@ -1,29 +1,67 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
-using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
+using TimeSheets.Data.Interfaces;
 using TimeSheets.Domain.Interfaces;
+using TimeSheets.Infrastructure.Extensions;
 using TimeSheets.Models;
 using TimeSheets.Models.Dto.Auth;
+using TimeSheets.Models.Dto.Requests;
 using TimeSheets.Models.Dto.Responses;
-using TimeSheets.Infrastructure.Extensions;
+using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace TimeSheets.Domain.Implementation
 {
-	public class LoginManager : ILoginManager
+    public class LoginManager : ILoginManager
 	{
 		private readonly JwtAccessOptions _jwtAccessOptions;
 		private readonly JwtRefreshOptions _jwtRefreshOptions;
+		private readonly IUserRepo _userRepo;
 
-		public LoginManager(IOptions<JwtAccessOptions> jwtAccessOptions, IOptions<JwtRefreshOptions> jwtRefreshOptions)
+		public LoginManager(IOptions<JwtAccessOptions> jwtAccessOptions, IOptions<JwtRefreshOptions> jwtRefreshOptions, IUserRepo userRepo)
 		{
 			_jwtAccessOptions = jwtAccessOptions.Value;
 			_jwtRefreshOptions = jwtRefreshOptions.Value;
+			_userRepo = userRepo;
 		}
 
 		public async Task<LoginResponse> Authenticate(User user)
+		{
+			var loginResponse = CreateTokensPair(user);
+
+			user.RefreshToken = loginResponse.RefreshToken;
+			await _userRepo.Update(user);
+
+			return loginResponse;
+		}
+		public async Task<LoginResponse> Refresh(RefreshTokenRequest request)
+		{
+			var securityHandler = new JwtSecurityTokenHandler();
+			var refreshTokenRaw = securityHandler.ReadJwtToken(request.RefreshToken);
+			var validTo = refreshTokenRaw.ValidTo;
+
+			var userId = Guid.Parse(refreshTokenRaw.Subject);
+
+			var user = await _userRepo.GetItem(userId);
+
+			if (user == null || user.RefreshToken != request.RefreshToken || validTo < DateTime.Now)
+			{
+				throw new ArgumentException("Bad Refresh JWT-token");
+			}
+
+			var loginResponse = CreateTokensPair(user);
+
+			user.RefreshToken = loginResponse.RefreshToken;
+			await _userRepo.Update(user);
+
+			return loginResponse;
+
+		}
+
+		private LoginResponse CreateTokensPair(User user)
 		{
 			var claims = new List<Claim>
 			{
@@ -44,7 +82,7 @@ namespace TimeSheets.Domain.Implementation
 			{
 				AccessToken = accessToken,
 				ExpiresIn = accessTokenRaw.ValidTo.ToEpochTime(),
-				RefreshToken = refreshToken
+				RefreshToken = refreshToken,
 			};
 
 			return loginResponse;
