@@ -2,10 +2,9 @@
 
 namespace TimeSheets.Models.Dto.Requests
 {
+    /// <summary> Запрос на обновление Access токена </summary>
     public sealed class RefreshTokenRequest
     {
-        public string Token { get; set; }
-        public DateTime Expires { get; set; }
-        public bool IsExpired => DateTime.UtcNow >= Expires;
-    }
+        public string RefreshToken { get; set; }
+     }
 }

@@ -9,6 +9,9 @@ using TimeSheets.Models;
 using TimeSheets.Models.Dto.Auth;
 using TimeSheets.Models.Dto.Responses;
 using TimeSheets.Infrastructure.Extensions;
+using TimeSheets.Data.Interfaces;
+using TimeSheets.Models.Dto.Requests;
+using System;
 
 namespace TimeSheets.Domain.Implementation
 {
@@ -16,14 +19,52 @@ namespace TimeSheets.Domain.Implementation
 	{
 		private readonly JwtAccessOptions _jwtAccessOptions;
 		private readonly JwtRefreshOptions _jwtRefreshOptions;
+		private readonly IUserRepo _userRepo;
 
-		public LoginManager(IOptions<JwtAccessOptions> jwtAccessOptions, IOptions<JwtRefreshOptions> jwtRefreshOptions)
+		public LoginManager(IOptions<JwtAccessOptions> jwtAccessOptions, IOptions<JwtRefreshOptions> jwtRefreshOptions, IUserRepo userRepo)
 		{
 			_jwtAccessOptions = jwtAccessOptions.Value;
 			_jwtRefreshOptions = jwtRefreshOptions.Value;
+			_userRepo = userRepo;
 		}
 
+		/// <summary>Аутентифицирует пользователя</summary>
 		public async Task<LoginResponse> Authenticate(User user)
+		{
+			var loginResponse = CreateTokensPair(user);
+
+			user.RefreshToken = loginResponse.RefreshToken;
+			await _userRepo.Update(user);
+
+			return loginResponse;
+		}
+
+		///<summary>Обновляет пару токенов для пользователя</summary>
+		public async Task<LoginResponse> RefreshToken(RefreshTokenRequest request)
+		{
+			var securityHandler = new JwtSecurityTokenHandler();
+			var refreshTokenRaw = securityHandler.ReadJwtToken(request.RefreshToken);
+			var validTo = refreshTokenRaw.ValidTo;
+
+			var userId = Guid.Parse(refreshTokenRaw.Subject);
+
+			var user = await _userRepo.GetItem(userId);
+
+			if (user == null || user.RefreshToken != request.RefreshToken || validTo < DateTime.Now)
+			{
+				throw new ArgumentException("Bad Refresh token");
+			}
+
+			var loginResponse = CreateTokensPair(user);
+
+			user.RefreshToken = loginResponse.RefreshToken;
+			await _userRepo.Update(user);
+
+			return loginResponse;
+		}
+
+		/// <summary>Создает пару токенов для пользователя</summary>
+		private LoginResponse CreateTokensPair(User user)
 		{
 			var claims = new List<Claim>
 			{
@@ -44,7 +85,7 @@ namespace TimeSheets.Domain.Implementation
 			{
 				AccessToken = accessToken,
 				ExpiresIn = accessTokenRaw.ValidTo.ToEpochTime(),
-				RefreshToken = refreshToken
+				RefreshToken = refreshToken,
 			};
 
 			return loginResponse;

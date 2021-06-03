@@ -2,6 +2,7 @@
 
 namespace TimeSheets.Models.Dto.Requests
 {
+    /// <summary>Запрос для карточки учета затраченного времени</summary>
     public class SheetRequest
     {
         public DateTime Date { get; set; }

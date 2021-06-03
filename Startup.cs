@@ -22,9 +22,10 @@ namespace TimeSheets
         {
             //Проверка на верность данных
             services.ConfigureValidation();
-            
-            // Контроллеры
             services.AddControllers().AddFluentValidation();
+
+            // Контроллеры
+            services.AddControllers();
 
             // Swagger
             services.ConfigureSwagger(Configuration);
