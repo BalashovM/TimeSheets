@@ -3,7 +3,7 @@ using TimeSheets.Models;
 using TimeSheets.Models.Dto.Requests;
 using TimeSheets.Models.Dto.Responses;
 
-namespace TimeSheets.Domain.Interfaces
+namespace TimeSheets.Domain.Managers.Interfaces
 {  /// <summary> Менеджер атентификации пользователя </summary>
 	public interface ILoginManager
 	{

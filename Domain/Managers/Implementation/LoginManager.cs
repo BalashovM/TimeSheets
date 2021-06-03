@@ -1,21 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
-using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
-using TimeSheets.Domain.Interfaces;
+using TimeSheets.Data.Interfaces;
+using TimeSheets.Domain.Managers.Interfaces;
+using TimeSheets.Infrastructure.Extensions;
 using TimeSheets.Models;
 using TimeSheets.Models.Dto.Auth;
-using TimeSheets.Models.Dto.Responses;
-using TimeSheets.Infrastructure.Extensions;
-using TimeSheets.Data.Interfaces;
 using TimeSheets.Models.Dto.Requests;
-using System;
+using TimeSheets.Models.Dto.Responses;
+using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
-namespace TimeSheets.Domain.Implementation
+namespace TimeSheets.Domain.Managers.Implementation
 {
-	public class LoginManager : ILoginManager
+    public class LoginManager : ILoginManager
 	{
 		private readonly JwtAccessOptions _jwtAccessOptions;
 		private readonly JwtRefreshOptions _jwtRefreshOptions;

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using TimeSheets.Domain.Interfaces;
+using TimeSheets.Domain.Managers.Interfaces;
 using TimeSheets.Models.Dto.Requests;
 
 namespace TimeSheets.Controllers

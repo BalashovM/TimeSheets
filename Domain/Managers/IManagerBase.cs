@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace TimeSheets.Domain
+namespace TimeSheets.Domain.Managers
 {
     /// <summary>Менеджер запросов к репозиториям</summary>
     public interface IManagerBase<TModel, TRequest>
