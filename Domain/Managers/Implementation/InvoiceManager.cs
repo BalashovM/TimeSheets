@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using TimeSheets.Data.Interfaces;
+using TimeSheets.Domain.Aggregates.InvoiceAggregate;
 using TimeSheets.Domain.Managers.Interfaces;
-using TimeSheets.Models;
 using TimeSheets.Models.Dto.Requests;
+using TimeSheets.Models.Enities;
 
 namespace TimeSheets.Domain.Managers.Implementation
 {
     public class InvoiceManager : IInvoiceManager
 	{
-		private readonly ISheetRepo _sheetRepo;
 		private readonly IInvoiceRepo _invoiceRepo;
-		private const int Rate = 100;
+		private readonly IInvoiceAggregateRepo _invoiceAggregateRepo;
 
 		public InvoiceManager(IInvoiceRepo invoiceRepo)
 		{
@@ -32,20 +31,11 @@ namespace TimeSheets.Domain.Managers.Implementation
 
 		public async Task<Guid> Create(InvoiceRequest request)
 		{
-			var sheets = await _sheetRepo.GetItemsForInvoice(request.ContractId, request.DateStart, request.DateEnd);
+			var invoice = InvoiceAggregate.Create(request.ContractId, request.DateStart, request.DateEnd);
 
-			var invoice = new Invoice()
-			{
-				Id = Guid.NewGuid(),
-				ContractId = request.ContractId,
-				DateStart = request.DateStart,
-				DateEnd = request.DateEnd,
-				//Sum = request.Sum,
-				IsDeleted = false
-			};
+			var sheetsToInclude = await _invoiceAggregateRepo.GetSheets(request.ContractId, request.DateStart, request.DateEnd);
 
-			invoice.Sheets.AddRange(sheets);
-			invoice.Sum = invoice.Sheets.Sum(x => x.Amount * Rate);
+			invoice.IncludeSheets(sheetsToInclude);
 
 			await _invoiceRepo.Add(invoice);
 
@@ -57,12 +47,8 @@ namespace TimeSheets.Domain.Managers.Implementation
 			var invoice = await _invoiceRepo.GetItem(id);
 			if (invoice != null)
 			{
-				invoice.ContractId = request.ContractId;
-				invoice.DateStart = request.DateStart;
-				invoice.DateEnd = request.DateEnd;
-				invoice.Sum = request.Sum;
-
-				await _invoiceRepo.Update(invoice);
+				InvoiceAggregate. UpdateFromInvoiceRequest(id, request);
+				 await _invoiceRepo.Update(invoice);
 			}
 		}
 
@@ -73,7 +59,9 @@ namespace TimeSheets.Domain.Managers.Implementation
 
 		public async Task Delete(Guid id)
 		{
-			await _invoiceRepo.Delete(id);
+			var sheet = await _invoiceAggregateRepo.GetItem(id);
+			sheet.DeleteInvoice();
+			await _invoiceAggregateRepo.Update(sheet);
 		}
 	}
 }

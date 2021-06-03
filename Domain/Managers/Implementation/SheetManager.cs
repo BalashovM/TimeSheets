@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TimeSheets.Data.Interfaces;
 using TimeSheets.Domain.Managers.Interfaces;
-using TimeSheets.Models;
+using TimeSheets.Models.Enities;
 using TimeSheets.Models.Dto.Requests;
+using TimeSheets.Domain.Aggregates.SheetAggregate;
 
 namespace TimeSheets.Domain.Managers.Implementation
 {
     public class SheetManager : ISheetManager
     {
         private readonly ISheetRepo _sheetRepo;
+        private readonly ISheetAggregateRepo _sheetAggregateRepo;
 
         public SheetManager(ISheetRepo sheetRepo)
         {
@@ -29,41 +31,35 @@ namespace TimeSheets.Domain.Managers.Implementation
 
         public async Task<Guid> Create(SheetRequest request)
         {
-            var sheet = new Sheet()
-            {
-                Id = Guid.NewGuid(),
-                Amount = request.Amount,
-                ContractId = request.ContractId,
-                Date = request.Date,
-                EmployeeId = request.EmployeeId,
-                ServiceId = request.ServiceId,
-                InvoiceId = request.InvoiceId,
-                IsDeleted = false
-            };
+            var sheet = SheetAggregate.CreateFromSheetRequest(request);
 
             await _sheetRepo.Add(sheet);
 
             return  sheet.Id;
         }
 
+        public async Task Approve(Guid sheetId)
+        {
+            var sheet = await _sheetAggregateRepo.GetItem(sheetId);
+            sheet.ApproveSheet();
+            await _sheetAggregateRepo.Update(sheet);
+        }
+
         public async Task Update(Guid id, SheetRequest request)
         {
-            var sheet = await _sheetRepo.GetItem(id);
-            if (sheet != null)
+            var invoice = await _sheetRepo.GetItem(id);
+            if (invoice != null)
             {
-                sheet.Amount = request.Amount;
-                sheet.ContractId = request.ContractId;
-                sheet.Date = request.Date;
-                sheet.EmployeeId = request.EmployeeId;
-                sheet.ServiceId = request.ServiceId;
-                sheet.InvoiceId = request.InvoiceId;
-
+                var sheet = SheetAggregate.UpdateFromSheetRequest(id,request);
                 await _sheetRepo.Update(sheet);
             }
         }
-        public async Task Delete(Guid id)
+
+        public async Task Delete(Guid sheetId)
         {
-            await _sheetRepo.Delete(id);
+            var sheet = await _sheetAggregateRepo.GetItem(sheetId);
+            sheet.DeleteSheet();
+            await _sheetAggregateRepo.Update(sheet);
         }
     }
 }

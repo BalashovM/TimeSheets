@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TimeSheets.Data.Configurations;
-using TimeSheets.Models;
+using TimeSheets.Models.Enities;
 
 namespace TimeSheets.Data
 {

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace TimeSheets.Models
+namespace TimeSheets.Models.Enities
 {
     /// <summary> Информация о сотруднике</summary>
     public class Employee

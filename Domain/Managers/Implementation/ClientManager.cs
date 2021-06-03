@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TimeSheets.Data.Interfaces;
 using TimeSheets.Domain.Managers.Interfaces;
-using TimeSheets.Models;
+using TimeSheets.Models.Enities;
 using TimeSheets.Models.Dto.Requests;
 
 namespace TimeSheets.Domain.Managers.Implementation

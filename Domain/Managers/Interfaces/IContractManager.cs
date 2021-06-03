@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using TimeSheets.Models;
+using TimeSheets.Models.Enities;
 using TimeSheets.Models.Dto.Requests;
 
 namespace TimeSheets.Domain.Managers.Interfaces

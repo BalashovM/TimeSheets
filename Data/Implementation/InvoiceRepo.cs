@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TimeSheets.Data.Interfaces;
-using TimeSheets.Models;
+using TimeSheets.Models.Enities;
 
 namespace TimeSheets.Data.Implementation
 {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using TimeSheets.Data.Interfaces;
 using TimeSheets.Domain.Managers.Interfaces;
 using TimeSheets.Infrastructure.Extensions;
-using TimeSheets.Models;
+using TimeSheets.Models.Enities;
 using TimeSheets.Models.Dto.Auth;
 using TimeSheets.Models.Dto.Requests;
 using TimeSheets.Models.Dto.Responses;
