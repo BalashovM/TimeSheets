@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TimeSheets.Data.Interfaces;
+using TimeSheets.Domain.Aggregates.SheetAggregate;
 using TimeSheets.Models.Enities;
 
 namespace TimeSheets.Data.Implementations
@@ -30,13 +31,13 @@ namespace TimeSheets.Data.Implementations
 
         public async Task Delete(Guid id)
         {
-            var item = await _dbContext.Sheets.FindAsync(id);
+            /* var item = await _dbContext.Sheets.FindAsync(id);
             if (item != null)
             {
                 item.IsDeleted = true;
                 _dbContext.Sheets.Update(item);
                 await _dbContext.SaveChangesAsync();
-            }
+            }*/
         }
 
         public async Task<Sheet> GetItem(Guid id)
@@ -48,6 +49,11 @@ namespace TimeSheets.Data.Implementations
         public async Task<IEnumerable<Sheet>> GetItems(int skip, int take)
         {
             return await _dbContext.Sheets.ToListAsync();
+        }
+
+        public Task<IEnumerable<Sheet>> GetItems()
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<Sheet>> GetItemsForInvoice(Guid contractId, DateTime dateStart, DateTime dateEnd)
@@ -65,5 +71,6 @@ namespace TimeSheets.Data.Implementations
             _dbContext.Sheets.Update(item);
             await _dbContext.SaveChangesAsync();
         }
+
     }
 }

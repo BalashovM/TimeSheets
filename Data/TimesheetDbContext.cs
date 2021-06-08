@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TimeSheets.Data.Configurations;
+using TimeSheets.Domain.Aggregates.InvoiceAggregate;
+using TimeSheets.Domain.Aggregates.SheetAggregate;
 using TimeSheets.Models.Enities;
 
 namespace TimeSheets.Data

@@ -11,29 +11,29 @@ namespace TimeSheets.Domain.Managers.Implementation
 {
     public class SheetManager : ISheetManager
     {
-        private readonly ISheetRepo _sheetRepo;
+        //private readonly ISheetRepo _sheetRepo;
         private readonly ISheetAggregateRepo _sheetAggregateRepo;
 
-        public SheetManager(ISheetRepo sheetRepo)
+        public SheetManager(ISheetAggregateRepo sheetAggregateRepo)
         {
-            _sheetRepo = sheetRepo;
+            _sheetAggregateRepo = sheetAggregateRepo;
         }
 
         public async Task<Sheet> GetItem(Guid id)
         {
-            return await _sheetRepo.GetItem(id);
+            return await _sheetAggregateRepo.GetItem(id);
         }
 
         public async Task<IEnumerable<Sheet>> GetItems(int skip, int take)
         {
-            return await _sheetRepo.GetItems(skip, take);
+            return await _sheetAggregateRepo.GetItems(skip, take);
         }
 
         public async Task<Guid> Create(SheetRequest request)
         {
             var sheet = SheetAggregate.CreateFromSheetRequest(request);
 
-            await _sheetRepo.Add(sheet);
+            await _sheetAggregateRepo.Add(sheet);
 
             return  sheet.Id;
         }
@@ -47,11 +47,11 @@ namespace TimeSheets.Domain.Managers.Implementation
 
         public async Task Update(Guid id, SheetRequest request)
         {
-            var invoice = await _sheetRepo.GetItem(id);
+            var invoice = await _sheetAggregateRepo.GetItem(id);
             if (invoice != null)
             {
                 var sheet = SheetAggregate.UpdateFromSheetRequest(id,request);
-                await _sheetRepo.Update(sheet);
+                await _sheetAggregateRepo.Update(sheet);
             }
         }
 

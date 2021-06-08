@@ -11,22 +11,17 @@ namespace TimeSheets.Domain.Managers.Implementation
 {
     public class InvoiceManager : IInvoiceManager
 	{
-		private readonly IInvoiceRepo _invoiceRepo;
+		//private readonly IInvoiceRepo _invoiceRepo;
 		private readonly IInvoiceAggregateRepo _invoiceAggregateRepo;
-
-		public InvoiceManager(IInvoiceRepo invoiceRepo)
-		{
-			_invoiceRepo = invoiceRepo;
-		}
 
 		public async Task<Invoice> GetItem(Guid id)
 		{
-			return await _invoiceRepo.GetItem(id);
+			return await _invoiceAggregateRepo.GetItem(id);
 		}
 
 		public async Task<IEnumerable<Invoice>> GetItems(int skip, int take)
 		{
-			return await _invoiceRepo.GetItems(skip, take);
+			return await _invoiceAggregateRepo.GetItems(skip, take);
 		}
 
 		public async Task<Guid> Create(InvoiceRequest request)
@@ -37,24 +32,24 @@ namespace TimeSheets.Domain.Managers.Implementation
 
 			invoice.IncludeSheets(sheetsToInclude);
 
-			await _invoiceRepo.Add(invoice);
+			await _invoiceAggregateRepo.Add(invoice);
 
 			return invoice.Id;
 		}
 
 		public async Task Update(Guid id, InvoiceRequest request)
 		{
-			var invoice = await _invoiceRepo.GetItem(id);
+			var invoice = await _invoiceAggregateRepo.GetItem(id);
 			if (invoice != null)
 			{
 				InvoiceAggregate. UpdateFromInvoiceRequest(id, request);
-				 await _invoiceRepo.Update(invoice);
+				 await _invoiceAggregateRepo.Update(invoice);
 			}
 		}
 
 		public async Task<bool> CheckInvoiceIsDeleted(Guid id)
 		{
-			return await _invoiceRepo.CheckItemIsDeleted(id);
+			return await _invoiceAggregateRepo.CheckItemIsDeleted(id);
 		}
 
 		public async Task Delete(Guid id)
@@ -63,5 +58,5 @@ namespace TimeSheets.Domain.Managers.Implementation
 			sheet.DeleteInvoice();
 			await _invoiceAggregateRepo.Update(sheet);
 		}
-	}
+    }
 }
