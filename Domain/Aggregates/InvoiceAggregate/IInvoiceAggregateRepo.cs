@@ -4,12 +4,8 @@ using System.Threading.Tasks;
 
 namespace TimeSheets.Domain.Aggregates.InvoiceAggregate
 {
-    public interface IInvoiceAggregateRepo
+    public interface IInvoiceAggregateRepo: IAggregateBase<InvoiceAggregate>
     {
-        Task<InvoiceAggregate> GetItem(Guid id);
-        Task<IEnumerable<InvoiceAggregate>> GetItems();
-        Task<Guid> Add(InvoiceAggregate item);
-        Task Update(InvoiceAggregate item);
         Task<IEnumerable<SheetAggregate.SheetAggregate>> GetSheets(Guid contractId, DateTime dateStart, DateTime dateEnd);
     }
 }

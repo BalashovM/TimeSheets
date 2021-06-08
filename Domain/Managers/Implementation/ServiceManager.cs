@@ -1,64 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TimeSheets.Data.Interfaces;
+using TimeSheets.Domain.Aggregates.ServiceAggregate;
 using TimeSheets.Domain.Managers.Interfaces;
-using TimeSheets.Models.Enities;
 using TimeSheets.Models.Dto.Requests;
+using TimeSheets.Models.Enities;
 
 namespace TimeSheets.Domain.Managers.Implementation
 {
     public class ServiceManager : IServiceManager
     {
-        private readonly IServiceRepo _serviceRepo;
+        private readonly IServiceAggregateRepo _serviceAggregateRepo;
 
-        public ServiceManager(IServiceRepo serviceRepo)
+        public ServiceManager(IServiceAggregateRepo serviceAggregateRepo)
         {
-            _serviceRepo = serviceRepo;
+            _serviceAggregateRepo = serviceAggregateRepo;
         }
-        public async Task<Service> GetItem(Guid id)
+        public async Task<ServiceAggregate> GetItem(Guid id)
         {
-            return await _serviceRepo.GetItem(id);
+            return await _serviceAggregateRepo.GetItem(id);
         }
 
-        public async Task<IEnumerable<Service>> GetItems(int skip, int take)
+        public async Task<IEnumerable<ServiceAggregate>> GetItems(int skip, int take)
         {
-            return await _serviceRepo.GetItems(skip, take);
+            return await _serviceAggregateRepo.GetItems(skip, take);
         }
 
         public async Task<Guid> Create(ServiceRequest request)
         {
-            var service = new Service()
-            {
-                Id = Guid.NewGuid(),
-                ServiceName = request.ServiceName,
-                IsDeleted = false
-            };
 
-            await _serviceRepo.Add(service);
+            var service = ServiceAggregate.CreateFromRequest(request);
+            
+            await _serviceAggregateRepo.Add(service);
 
             return service.Id;
         }
 
         public async Task Update(Guid id, ServiceRequest request)
         {
-            var service = await _serviceRepo.GetItem(id);
-            if (service != null)
-            {
-                service.ServiceName = request.ServiceName;
-
-                await _serviceRepo.Update(service);
-            }
+            var item = await _serviceAggregateRepo.GetItem(id);
+            item.UpdateFromRequest(request);
         }
 
         public async Task<bool> CheckServiceIsDeleted(Guid id)
         {
-            return await _serviceRepo.CheckItemIsDeleted(id);
+            return await _serviceAggregateRepo.CheckItemIsDeleted(id);
         }
 
         public async Task Delete(Guid id)
         {
-            await _serviceRepo.Delete(id);
+
+            var service = await _serviceAggregateRepo.GetItem(id);
+            service.DeleteService();
+            await _serviceAggregateRepo.Update(service);
         }
 
     }

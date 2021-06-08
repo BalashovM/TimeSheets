@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TimeSheets.Data.Configurations;
+using TimeSheets.Domain.Aggregates.UserAggregate;
 using TimeSheets.Models.Enities;
 
 namespace TimeSheets.Data

@@ -11,7 +11,6 @@ namespace TimeSheets.Models.Enities
 		public Guid ContractId { get; protected set; }
 		public DateTime DateStart { get; protected set; }
 		public DateTime DateEnd { get; protected set; }
-		//public decimal Sum { get; protected set; }
 		public Money Sum { get; protected set; }
 		public bool IsDeleted { get; protected set; }
 

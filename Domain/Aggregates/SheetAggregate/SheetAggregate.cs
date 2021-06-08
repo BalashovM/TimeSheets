@@ -21,7 +21,7 @@ namespace TimeSheets.Domain.Aggregates.SheetAggregate
             };
         }
 
-        public static SheetAggregate CreateFromSheetRequest(SheetRequest request)
+        public static SheetAggregate CreateFromRequest(SheetRequest request)
         {
             return new SheetAggregate()
             {
@@ -34,17 +34,13 @@ namespace TimeSheets.Domain.Aggregates.SheetAggregate
             };
         }
 
-        public static SheetAggregate UpdateFromSheetRequest(Guid id, SheetRequest request)
+        public void UpdateFromRequest(SheetRequest request)
         {
-            return new SheetAggregate()
-            {
-                Id = id,
-                Amount = request.Amount,
-                ContractId = request.ContractId,
-                Date = request.Date,
-                EmployeeId = request.EmployeeId,
-                ServiceId = request.ServiceId
-            };
+            Amount = request.Amount;
+            ContractId = request.ContractId;
+            Date = request.Date;
+            EmployeeId = request.EmployeeId;
+            ServiceId = request.ServiceId;
         }
 
         public void ApproveSheet()
@@ -62,6 +58,5 @@ namespace TimeSheets.Domain.Aggregates.SheetAggregate
         {
             IsDeleted = true;
         }
-
     }
 }

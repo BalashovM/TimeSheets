@@ -1,76 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TimeSheets.Data.Interfaces;
+using TimeSheets.Domain.Aggregates.ContractAggregate;
 using TimeSheets.Domain.Managers.Interfaces;
-using TimeSheets.Models.Enities;
 using TimeSheets.Models.Dto.Requests;
+using TimeSheets.Models.Enities;
 
 namespace TimeSheets.Domain.Managers.Implementation
 {
     public class ContractManager : IContractManager
     {
-        private readonly IContractRepo _contractRepo;
+        private readonly IContractAggregateRepo _contractAggregateRepo;
 
-        public ContractManager(IContractRepo contractRepo)
+        public ContractManager(IContractAggregateRepo contractAggregateRepo)
         {
-            _contractRepo = contractRepo;
+            _contractAggregateRepo = contractAggregateRepo;
         }
 
         public async Task<bool?> CheckContractIsActive(Guid id)
         {
-            return await _contractRepo.CheckContractIsActive(id);
+            return await _contractAggregateRepo.CheckContractIsActive(id);
         }
 
-        public async Task<Contract> GetItem(Guid id)
+        public async Task<ContractAggregate> GetItem(Guid id)
         {
-            return await _contractRepo.GetItem(id);
+            return await _contractAggregateRepo.GetItem(id);
         }
 
-        public async Task<IEnumerable<Contract>> GetItems(int skip, int take)
+        public async Task<IEnumerable<ContractAggregate>> GetItems(int skip, int take)
         {
-            return await _contractRepo.GetItems(skip, take);
+            return await _contractAggregateRepo.GetItems(skip, take);
         }
 
         public async Task<Guid> Create(ContractRequest request)
         {
-            var contract = new Contract()
-            {
-                Id = Guid.NewGuid(),
-                Title = request.Title,
-                DateStart = request.DateStart,
-                DateEnd = request.DateEnd,
-                Description = request.Description,
-                IsDeleted = false
-            };
+            var contract = ContractAggregate.CreateFromRequest(request);
 
-            await _contractRepo.Add(contract);
+            await _contractAggregateRepo.Add(contract);
 
             return contract.Id;
         }
 
         public async Task Update(Guid id, ContractRequest request)
         {
-            var contract = await _contractRepo.GetItem(id);
+            var contract = await _contractAggregateRepo.GetItem(id);
             if (contract != null)
             {
-                contract.Title = request.Title;
-                contract.DateStart = request.DateStart;
-                contract.DateEnd = request.DateEnd;
-                contract.Description = request.Description;
-
-                await _contractRepo.Update(contract);
+                contract.UpdateFromRequest(request);
             }
         }
 
         public async Task<bool> CheckContractIsDeleted(Guid id)
         {
-            return await _contractRepo.CheckItemIsDeleted(id);
+            return await _contractAggregateRepo.CheckItemIsDeleted(id);
         }
 
         public async Task Delete(Guid id)
         {
-            await _contractRepo.Delete(id);
+            var contract = await _contractAggregateRepo.GetItem(id);
+            contract.DeleteContract();
+            await _contractAggregateRepo.Update(contract);
         }
     }
 }

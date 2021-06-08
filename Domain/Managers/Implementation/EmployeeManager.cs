@@ -1,64 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TimeSheets.Data.Interfaces;
+using TimeSheets.Domain.Aggregates.EmployeeAggregate;
 using TimeSheets.Domain.Managers.Interfaces;
-using TimeSheets.Models.Enities;
 using TimeSheets.Models.Dto.Requests;
+using TimeSheets.Models.Enities;
 
 namespace TimeSheets.Domain.Managers.Implementation
 {
     public class EmployeeManager : IEmployeeManager
     {
-        private readonly IEmployeeRepo _employeeRepo;
+        private readonly IEmployeeAggregateRepo _employeeAggregateRepo;
 
-        public EmployeeManager(IEmployeeRepo employeeRepo)
+        public EmployeeManager(IEmployeeAggregateRepo employeeAggregateRepo)
         {
-            _employeeRepo = employeeRepo;
+            _employeeAggregateRepo = employeeAggregateRepo;
         }
-        public async Task<Employee> GetItem(Guid id)
+        public async Task<EmployeeAggregate> GetItem(Guid id)
         {
-            return await _employeeRepo.GetItem(id);
+            return await _employeeAggregateRepo.GetItem(id);
         }
 
-        public async Task<IEnumerable<Employee>> GetItems(int skip, int take)
+        public async Task<IEnumerable<EmployeeAggregate>> GetItems(int skip, int take)
         {
-            return await _employeeRepo.GetItems(skip, take);
+            return await _employeeAggregateRepo.GetItems(skip, take);
         }
 
         public async Task<Guid> Create(EmployeeRequest request)
         {
-            var employee = new Employee()
-            {
-                Id = Guid.NewGuid(),
-                UserId = request.UserId,
-                IsDeleted = false
-            };
+            var employee = EmployeeAggregate.CreateFromRequest(request);
 
-            await _employeeRepo.Add(employee);
+            await _employeeAggregateRepo.Add(employee);
 
             return employee.Id;
         }
 
         public async Task Update(Guid id, EmployeeRequest request)
         {
-            var employee = await _employeeRepo.GetItem(id);
-            if (employee != null)
-            {
-                employee.UserId = request.UserId;
-
-                await _employeeRepo.Update(employee);
-            }
+            var employee = await _employeeAggregateRepo.GetItem(id);
+            employee.UpdateFromRequest(request);
         }
 
         public async Task<bool> CheckEmployeeIsDeleted(Guid id)
         {
-            return await _employeeRepo.CheckItemIsDeleted(id);
+            return await _employeeAggregateRepo.CheckItemIsDeleted(id);
         }
 
         public async Task Delete(Guid id)
         {
-            await _employeeRepo.Delete(id);
+            var employee = await _employeeAggregateRepo.GetItem(id);
+            employee.DeleteEmployee();
+            await _employeeAggregateRepo.Update(employee);
         }
     }
 }

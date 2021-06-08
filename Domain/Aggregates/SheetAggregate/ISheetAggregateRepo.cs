@@ -4,11 +4,7 @@ using System.Threading.Tasks;
 
 namespace TimeSheets.Domain.Aggregates.SheetAggregate
 {
-    interface ISheetAggregateRepo
+    public interface ISheetAggregateRepo:IAggregateBase<SheetAggregate>
     {
-        Task<SheetAggregate> GetItem(Guid id);
-        Task<IEnumerable<SheetAggregate>> GetItems();
-        Task<Guid> Add(SheetAggregate item);
-        Task Update(SheetAggregate item);
     }
 }

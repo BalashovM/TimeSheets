@@ -1,39 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TimeSheets.Data.Interfaces;
-using TimeSheets.Domain.Managers.Interfaces;
-using TimeSheets.Models.Enities;
-using TimeSheets.Models.Dto.Requests;
 using TimeSheets.Domain.Aggregates.SheetAggregate;
+using TimeSheets.Domain.Managers.Interfaces;
+using TimeSheets.Models.Dto.Requests;
+using TimeSheets.Models.Enities;
 
 namespace TimeSheets.Domain.Managers.Implementation
 {
     public class SheetManager : ISheetManager
     {
-        private readonly ISheetRepo _sheetRepo;
         private readonly ISheetAggregateRepo _sheetAggregateRepo;
 
-        public SheetManager(ISheetRepo sheetRepo)
+        public SheetManager(ISheetAggregateRepo sheetAggregateRepo)
         {
-            _sheetRepo = sheetRepo;
+            _sheetAggregateRepo = sheetAggregateRepo;
         }
 
         public async Task<Sheet> GetItem(Guid id)
         {
-            return await _sheetRepo.GetItem(id);
+            return await _sheetAggregateRepo.GetItem(id);
         }
 
         public async Task<IEnumerable<Sheet>> GetItems(int skip, int take)
         {
-            return await _sheetRepo.GetItems(skip, take);
+            return await _sheetAggregateRepo.GetItems(skip, take);
         }
 
         public async Task<Guid> Create(SheetRequest request)
         {
-            var sheet = SheetAggregate.CreateFromSheetRequest(request);
+            var sheet = SheetAggregate.CreateFromRequest(request);
 
-            await _sheetRepo.Add(sheet);
+            await _sheetAggregateRepo.Add(sheet);
 
             return  sheet.Id;
         }
@@ -47,12 +45,16 @@ namespace TimeSheets.Domain.Managers.Implementation
 
         public async Task Update(Guid id, SheetRequest request)
         {
-            var invoice = await _sheetRepo.GetItem(id);
-            if (invoice != null)
+            var sheet = await _sheetAggregateRepo.GetItem(id);
+            if (sheet != null)
             {
-                var sheet = SheetAggregate.UpdateFromSheetRequest(id,request);
-                await _sheetRepo.Update(sheet);
+                sheet.UpdateFromRequest(request);
             }
+        }
+
+        public async Task<bool> CheckInvoiceIsDeleted(Guid id)
+        {
+            return await _sheetAggregateRepo.CheckItemIsDeleted(id);
         }
 
         public async Task Delete(Guid sheetId)
