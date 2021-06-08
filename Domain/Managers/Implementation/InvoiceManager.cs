@@ -18,12 +18,12 @@ namespace TimeSheets.Domain.Managers.Implementation
 			_invoiceAggregateRepo = invoiceAggregateRepo;
 		}
 
-		public async Task<Invoice> GetItem(Guid id)
+		public async Task<InvoiceAggregate> GetItem(Guid id)
 		{
 			return await _invoiceAggregateRepo.GetItem(id);
 		}
 
-		public async Task<IEnumerable<Invoice>> GetItems(int skip, int take)
+		public async Task<IEnumerable<InvoiceAggregate>> GetItems(int skip, int take)
 		{
 			return await _invoiceAggregateRepo.GetItems(skip, take);
 		}

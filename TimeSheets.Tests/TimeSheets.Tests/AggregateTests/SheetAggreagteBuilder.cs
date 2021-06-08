@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TimeSheets.Domain.Aggregates.SheetAggregate;
 using TimeSheets.Models.Dto.Requests;
 
-namespace TimeSheets.Tests
+namespace TimeSheets.Tests.AggregateTests
 {
     public class SheetAggreagteBuilder
     {
@@ -25,8 +21,8 @@ namespace TimeSheets.Tests
                 ServiceId = SheetServiceId
             };
 
-            var result = SheetAggregate.CreateFromSheetRequest(sheetRequest);
-            
+            var result = SheetAggregate.CreateFromRequest(sheetRequest);
+
             return result;
         }
     }
