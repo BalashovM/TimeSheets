@@ -29,13 +29,13 @@ namespace TimeSheets.Data.Implementations
 
         public async Task Delete(Guid id)
         {
-            var item = await _dbContext.Users.FindAsync(id);
+            /*var item = await _dbContext.Users.FindAsync(id);
             if (item != null)
             {
-                item.IsDeleted = true;
+                item.DeleteUser();
                 _dbContext.Users.Update(item);
                 await _dbContext.SaveChangesAsync();
-            }
+            }*/
         }
 
         public async Task<User> GetItem(Guid id)

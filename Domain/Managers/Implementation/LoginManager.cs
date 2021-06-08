@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using TimeSheets.Data.Interfaces;
+using TimeSheets.Domain.Aggregates.UserAggregate;
 using TimeSheets.Domain.Managers.Interfaces;
 using TimeSheets.Infrastructure.Extensions;
-using TimeSheets.Models.Enities;
 using TimeSheets.Models.Dto.Auth;
 using TimeSheets.Models.Dto.Requests;
 using TimeSheets.Models.Dto.Responses;
+using TimeSheets.Models.Enities;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace TimeSheets.Domain.Managers.Implementation
@@ -19,22 +19,22 @@ namespace TimeSheets.Domain.Managers.Implementation
 	{
 		private readonly JwtAccessOptions _jwtAccessOptions;
 		private readonly JwtRefreshOptions _jwtRefreshOptions;
-		private readonly IUserRepo _userRepo;
+		private readonly IUserAggregateRepo _userAggrigateRepo;
 
-		public LoginManager(IOptions<JwtAccessOptions> jwtAccessOptions, IOptions<JwtRefreshOptions> jwtRefreshOptions, IUserRepo userRepo)
+		public LoginManager(IOptions<JwtAccessOptions> jwtAccessOptions, IOptions<JwtRefreshOptions> jwtRefreshOptions, IUserAggregateRepo userAggrigateRepo)
 		{
 			_jwtAccessOptions = jwtAccessOptions.Value;
 			_jwtRefreshOptions = jwtRefreshOptions.Value;
-			_userRepo = userRepo;
+			_userAggrigateRepo = userAggrigateRepo;
 		}
 
 		/// <summary>Аутентифицирует пользователя</summary>
-		public async Task<LoginResponse> Authenticate(User user)
+		public async Task<LoginResponse> Authenticate(UserAggregate user)
 		{
 			var loginResponse = CreateTokensPair(user);
 
-			user.RefreshToken = loginResponse.RefreshToken;
-			await _userRepo.Update(user);
+			user.UpdateRefreshToken(loginResponse.RefreshToken);
+			await _userAggrigateRepo.Update(user);
 
 			return loginResponse;
 		}
@@ -48,7 +48,7 @@ namespace TimeSheets.Domain.Managers.Implementation
 
 			var userId = Guid.Parse(refreshTokenRaw.Subject);
 
-			var user = await _userRepo.GetItem(userId);
+			var user = await _userAggrigateRepo.GetItem(userId);
 
 			if (user == null || user.RefreshToken != request.RefreshToken || validTo < DateTime.Now)
 			{
@@ -57,8 +57,8 @@ namespace TimeSheets.Domain.Managers.Implementation
 
 			var loginResponse = CreateTokensPair(user);
 
-			user.RefreshToken = loginResponse.RefreshToken;
-			await _userRepo.Update(user);
+			user.UpdateRefreshToken(loginResponse.RefreshToken);
+			await _userAggrigateRepo.Update(user);
 
 			return loginResponse;
 		}

@@ -11,8 +11,12 @@ namespace TimeSheets.Domain.Managers.Implementation
 {
     public class InvoiceManager : IInvoiceManager
 	{
-		//private readonly IInvoiceRepo _invoiceRepo;
 		private readonly IInvoiceAggregateRepo _invoiceAggregateRepo;
+
+		public InvoiceManager(IInvoiceAggregateRepo invoiceAggregateRepo)
+		{
+			_invoiceAggregateRepo = invoiceAggregateRepo;
+		}
 
 		public async Task<Invoice> GetItem(Guid id)
 		{

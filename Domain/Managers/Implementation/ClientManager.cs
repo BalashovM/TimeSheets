@@ -5,61 +5,57 @@ using TimeSheets.Data.Interfaces;
 using TimeSheets.Domain.Managers.Interfaces;
 using TimeSheets.Models.Enities;
 using TimeSheets.Models.Dto.Requests;
+using TimeSheets.Domain.Aggregates.ClientAggregate;
 
 namespace TimeSheets.Domain.Managers.Implementation
 {
     public class ClientManager : IClientManager
     {
-        private readonly IClientRepo _clientRepo;
+        private readonly IClientAggregateRepo _clientAggregateRepo;
 
-        public ClientManager(IClientRepo clientRepo)
+        public ClientManager(IClientAggregateRepo clientAggregateRepo)
         {
-            _clientRepo = clientRepo;
+            _clientAggregateRepo = clientAggregateRepo;
         }
 
-        public async Task<Client> GetItem(Guid id)
+        public async Task<ClientAggregate> GetItem(Guid id)
         {
-            return await _clientRepo.GetItem(id);
+            return await _clientAggregateRepo.GetItem(id);
         }
 
-        public async Task<IEnumerable<Client>> GetItems(int skip, int take)
+        public async Task<IEnumerable<ClientAggregate>> GetItems(int skip, int take)
         {
-            return await _clientRepo.GetItems(skip, take);
+            return await _clientAggregateRepo.GetItems(skip, take);
         }
 
         public async Task<Guid> Create(ClientRequest request)
         {
-            var client = new Client
-            {
-                Id = Guid.NewGuid(),
-                UserId = request.UserId,
-                IsDeleted = false
-            };
+            var client = ClientAggregate.CreateFromRequest(request);
 
-            await _clientRepo.Add(client);
+            await _clientAggregateRepo.Add(client);
 
             return client.Id;
         }
 
         public async Task Update(Guid id, ClientRequest request)
         {
-            var client = await _clientRepo.GetItem(id);
+            var client = await _clientAggregateRepo.GetItem(id);
             if (client != null)
             {
-                client.UserId = request.UserId;
-
-                await _clientRepo.Update(client);
+                client.UpdateFromRequest(request);
             }
         }
 
         public async Task<bool> CheckClientIsDeleted(Guid id)
         {
-            return await _clientRepo.CheckItemIsDeleted(id);
+            return await _clientAggregateRepo.CheckItemIsDeleted(id);
         }
 
         public async Task Delete(Guid id)
         {
-            await _clientRepo.Delete(id);
+            var client = await _clientAggregateRepo.GetItem(id);
+            client.DeleteClient();
+            await _clientAggregateRepo.Update(client);
         }
     }
 }

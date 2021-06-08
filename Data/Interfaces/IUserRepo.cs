@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using TimeSheets.Domain.Aggregates.UserAggregate;
 using TimeSheets.Models.Enities;
 
 namespace TimeSheets.Data.Interfaces
