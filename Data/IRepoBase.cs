@@ -1,6 +1,5 @@
-﻿ using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace TimeSheets.Data
@@ -14,6 +13,5 @@ namespace TimeSheets.Data
         Task Update(T item);
         Task Delete(Guid id);
         Task<bool> CheckItemIsDeleted(Guid id);
-
     }
 }
