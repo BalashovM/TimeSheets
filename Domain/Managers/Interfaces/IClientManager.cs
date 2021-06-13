@@ -1,6 +1,5 @@
-﻿using TimeSheets.Models.Enities;
+﻿using TimeSheets.Domain.Aggregates.ClientAggregate;
 using TimeSheets.Models.Dto.Requests;
-using TimeSheets.Domain.Aggregates.ClientAggregate;
 
 namespace TimeSheets.Domain.Managers.Interfaces
 {

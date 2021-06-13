@@ -14,7 +14,7 @@ namespace TimeSheets.Models.Enities
         public int Amount { get; protected set; }
         public bool IsDeleted { get; protected set; }
         public bool IsApproved { get; protected set; }
-        public DateTime ApprovesDate { get; protected set; }
+        public DateTime ApprovedDate { get; protected set; }
 
         public Employee Employee { get; set; }
         public Contract Contract { get; set; }

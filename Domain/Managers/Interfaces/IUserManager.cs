@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
-using TimeSheets.Models.Enities;
-using TimeSheets.Models.Dto.Requests;
 using TimeSheets.Domain.Aggregates.UserAggregate;
+using TimeSheets.Models.Dto.Requests;
 
 namespace TimeSheets.Domain.Managers.Interfaces
 {

@@ -5,6 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="TimeSheets.Tests\**" />
+    <Content Remove="TimeSheets.Tests\**" />
+    <EmbeddedResource Remove="TimeSheets.Tests\**" />
+    <None Remove="TimeSheets.Tests\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions.AspNetCore.Mvc" Version="3.2.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="10.2.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.6" />

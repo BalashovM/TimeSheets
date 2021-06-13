@@ -23,7 +23,7 @@ namespace TimeSheets.Domain.Aggregates.InvoiceAggregate
                 IsDeleted = false
             };
         }
-        public static InvoiceAggregate CreateFromInvoiceRequest(InvoiceRequest request)
+        public static InvoiceAggregate CreateFromRequest(InvoiceRequest request)
         {
             return new InvoiceAggregate()
             {
@@ -35,7 +35,7 @@ namespace TimeSheets.Domain.Aggregates.InvoiceAggregate
             };
         }
 
-        public static InvoiceAggregate UpdateFromInvoiceRequest(Guid id, InvoiceRequest request)
+        public static InvoiceAggregate UpdateFromRequest(Guid id, InvoiceRequest request)
         {
             return new InvoiceAggregate()
             {

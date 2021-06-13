@@ -17,12 +17,12 @@ namespace TimeSheets.Domain.Managers.Implementation
             _sheetAggregateRepo = sheetAggregateRepo;
         }
 
-        public async Task<Sheet> GetItem(Guid id)
+        public async Task<SheetAggregate> GetItem(Guid id)
         {
             return await _sheetAggregateRepo.GetItem(id);
         }
 
-        public async Task<IEnumerable<Sheet>> GetItems(int skip, int take)
+        public async Task<IEnumerable<SheetAggregate>> GetItems(int skip, int take)
         {
             return await _sheetAggregateRepo.GetItems(skip, take);
         }

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TimeSheets.Data.Interfaces;
 using TimeSheets.Domain.Aggregates.InvoiceAggregate;
 using TimeSheets.Domain.Managers.Interfaces;
 using TimeSheets.Models.Dto.Requests;
-using TimeSheets.Models.Enities;
 
 namespace TimeSheets.Domain.Managers.Implementation
 {
@@ -46,7 +44,7 @@ namespace TimeSheets.Domain.Managers.Implementation
 			var invoice = await _invoiceAggregateRepo.GetItem(id);
 			if (invoice != null)
 			{
-				InvoiceAggregate. UpdateFromInvoiceRequest(id, request);
+				InvoiceAggregate. UpdateFromRequest(id, request);
 				 await _invoiceAggregateRepo.Update(invoice);
 			}
 		}

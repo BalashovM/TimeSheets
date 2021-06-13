@@ -25,8 +25,6 @@ namespace TimeSheets.Tests.ValueObjectsTests
 			Action act = () => Money.FromDecimal(amount);
 
 			act.Should().Throw<ArgumentException>();
-			
 		}
-
 	}
 }

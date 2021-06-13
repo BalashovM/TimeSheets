@@ -46,7 +46,7 @@ namespace TimeSheets.Domain.Aggregates.SheetAggregate
         public void ApproveSheet()
         {
             IsApproved = true;
-            ApprovesDate = DateTime.Now;
+            ApprovedDate = DateTime.Now;
         }
 
         public void ChangeEmployee(Guid newEmployee) 

@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using TimeSheets.Domain.Aggregates.ContractAggregate;
 using TimeSheets.Domain.Managers.Interfaces;
 using TimeSheets.Models.Dto.Requests;
-using TimeSheets.Models.Enities;
 
 namespace TimeSheets.Domain.Managers.Implementation
 {
