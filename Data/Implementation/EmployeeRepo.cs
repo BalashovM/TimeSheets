@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TimeSheets.Data.Interfaces;
-using TimeSheets.Models;
+using TimeSheets.Models.Enities;
 
 namespace TimeSheets.Data.Implementations
 {
@@ -28,13 +28,13 @@ namespace TimeSheets.Data.Implementations
         }
         public async Task Delete(Guid id)
         {
-            var item = await _dbContext.Employees.FindAsync(id);
+            /*var item = await _dbContext.Employees.FindAsync(id);
             if (item != null)
             {
                 item.IsDeleted = true;
                 _dbContext.Employees.Update(item);
                 await _dbContext.SaveChangesAsync();
-            }
+            }*/
         }
 
         public async Task<Employee> GetItem(Guid id)

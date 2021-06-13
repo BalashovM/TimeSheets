@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using TimeSheets.Models;
+﻿using System.Threading.Tasks;
+using TimeSheets.Domain.Aggregates.UserAggregate;
+using TimeSheets.Models.Enities;
 
 namespace TimeSheets.Data.Interfaces
 {
     public interface IUserRepo:IRepoBase<User>
     {
+        Task<User> GetItem(string login, byte[] passwordHash);
     }
 }

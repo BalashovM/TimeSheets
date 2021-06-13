@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TimeSheets.Data.Configurations;
-using TimeSheets.Models;
+using TimeSheets.Domain.Aggregates.InvoiceAggregate;
+using TimeSheets.Domain.Aggregates.SheetAggregate;
+using TimeSheets.Models.Enities;
 
 namespace TimeSheets.Data
 {
@@ -16,7 +18,6 @@ namespace TimeSheets.Data
 
         public TimesheetDbContext(DbContextOptions<TimesheetDbContext> options) : base(options)
         { 
-        
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

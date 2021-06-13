@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TimeSheets.Data.Interfaces;
-using TimeSheets.Models;
+using TimeSheets.Domain.Aggregates.SheetAggregate;
+using TimeSheets.Models.Enities;
 
 namespace TimeSheets.Data.Implementations
 {
@@ -29,13 +31,13 @@ namespace TimeSheets.Data.Implementations
 
         public async Task Delete(Guid id)
         {
-            var item = await _dbContext.Sheets.FindAsync(id);
+            /* var item = await _dbContext.Sheets.FindAsync(id);
             if (item != null)
             {
                 item.IsDeleted = true;
                 _dbContext.Sheets.Update(item);
                 await _dbContext.SaveChangesAsync();
-            }
+            }*/
         }
 
         public async Task<Sheet> GetItem(Guid id)
@@ -49,10 +51,26 @@ namespace TimeSheets.Data.Implementations
             return await _dbContext.Sheets.ToListAsync();
         }
 
+        public Task<IEnumerable<Sheet>> GetItems()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<Sheet>> GetItemsForInvoice(Guid contractId, DateTime dateStart, DateTime dateEnd)
+        {
+            var sheets = await _dbContext.Sheets.Where(x => x.ContractId == contractId)
+                .Where(x => x.Date <= dateEnd && x.Date >= dateStart)
+                .Where(x => x.InvoiceId == null)
+                .ToListAsync();
+
+            return sheets;
+        }
+
         public async Task Update(Sheet item)
         {
             _dbContext.Sheets.Update(item);
             await _dbContext.SaveChangesAsync();
         }
+
     }
 }

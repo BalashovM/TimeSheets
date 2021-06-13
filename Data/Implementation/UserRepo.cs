@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TimeSheets.Data.Interfaces;
-using TimeSheets.Models;
+using TimeSheets.Models.Enities;
 
 namespace TimeSheets.Data.Implementations
 {
@@ -29,19 +29,25 @@ namespace TimeSheets.Data.Implementations
 
         public async Task Delete(Guid id)
         {
-            var item = await _dbContext.Users.FindAsync(id);
+            /*var item = await _dbContext.Users.FindAsync(id);
             if (item != null)
             {
-                item.IsDeleted = true;
+                item.DeleteUser();
                 _dbContext.Users.Update(item);
                 await _dbContext.SaveChangesAsync();
-            }
+            }*/
         }
 
         public async Task<User> GetItem(Guid id)
         {
             var result = await _dbContext.Users.FindAsync(id);
             return result;
+        }
+
+        public async Task<User> GetItem(string login, byte[] passwordHash)
+        {
+            return await _dbContext.Users
+                .FirstOrDefaultAsync(x => x.UserName == login && x.PasswordHash == passwordHash);
         }
 
         public async Task<IEnumerable<User>> GetItems(int skip, int take)
