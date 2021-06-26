@@ -1,10 +1,10 @@
 ﻿using TimeSheets.Models;
-using TimeSheets.Models.Dto;
+using TimeSheets.Models.Dto.Requests;
 
 namespace TimeSheets.Domain.Interfaces
 {
     /// <summary>Менеджер запросов к данным по услуге</summary>
-    interface IServiceManager :IManagerBase<Service,ServiceRequest>
+    public interface IServiceManager :IManagerBase<Service,ServiceRequest>
     {
     }
 }
